@@ -23,7 +23,7 @@ export class AuthService {
       throw new UnauthorizedException('密码不正确');
     }
     const { password, ...restUser } = user;
-    const payload = { sub: user.id, ...restUser };
+    const payload = { sub: user.id, ...restUser.dataValues };
     return {
       ...restUser.dataValues,
       access_token: await this.jwtService.signAsync(payload),

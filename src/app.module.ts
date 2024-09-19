@@ -13,6 +13,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
   imports: [
     ConfigModule.forRoot({
       load: [configuration],
+      isGlobal: true,
       envFilePath: ['./src/env/.env.dev', './src/env/.env'],
     }),
     SequelizeModule.forRootAsync({
