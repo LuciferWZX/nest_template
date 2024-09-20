@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { ResponseInterceptor } from './interceptor/Response.interceptor';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { WorkspaceModule } from './workspace/workspace.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -35,6 +36,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
     }),
     AuthModule,
     UsersModule,
+    WorkspaceModule,
   ],
   controllers: [AppController],
   providers: [
