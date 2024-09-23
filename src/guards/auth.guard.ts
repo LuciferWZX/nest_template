@@ -7,18 +7,33 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { EnvJWT } from '../config/type';
+import { Reflector } from '@nestjs/core';
+import { IS_PUBLIC_KEY } from '../auth/decorator';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
     private jwtService: JwtService,
     private configService: ConfigService,
+    private reflector: Reflector,
   ) {}
   async canActivate(context: ExecutionContext): Promise<boolean> {
+    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+    if (isPublic) {
+      // 💡 See this condition
+      return true;
+    }
     const request = context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);
     if (!token) {
-      throw new UnauthorizedException('无用户信息');
+      throw new UnauthorizedException({
+        code: 401,
+        message: '无用户信息',
+        data: null,
+      });
     }
     try {
       // 💡 We're assigning the payload to the request object here
@@ -29,7 +44,11 @@ export class AuthGuard implements CanActivate {
       });
       request['user'] = user;
     } catch (e) {
-      throw new UnauthorizedException('用户凭证已失效');
+      throw new UnauthorizedException({
+        code: 401,
+        message: '用户凭证已失效',
+        data: null,
+      });
     }
     return true;
   }

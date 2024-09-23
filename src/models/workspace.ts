@@ -1,11 +1,8 @@
 import {
-  AllowNull,
   Column,
   DataType,
   Table,
   Model,
-  Unique,
-  Index,
   DeletedAt,
   BeforeCreate,
   BelongsTo,
@@ -47,9 +44,20 @@ export class Workspace extends Model {
     allowNull: false,
     comment: '创建者的id',
   })
-  creatorId: number;
+  creatorId: string;
   @BelongsTo(() => User, 'creatorId')
   creator: User;
+
+  @ForeignKey(() => User)
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+    comment: '删除者的id',
+  })
+  deleterId: string;
+  @BelongsTo(() => User, 'deleterId')
+  deleter: User;
+
   @DeletedAt
   deletedAt: Date;
 

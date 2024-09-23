@@ -26,13 +26,22 @@ export class ResponseInterceptor<T>
       })),
       catchError((err) => {
         if (err instanceof HttpException) {
-          console.error('[出错]:');
+          console.error('[出错1]:', err);
           // 如果是 HttpException，使用 HttpException 的状态码和错误消息
-          return throwError(() => err);
+          return throwError(
+            () =>
+              new HttpException(
+                { code: err.getStatus(), message: err.message, data: null },
+                err.getStatus(),
+              ),
+          );
         } else {
+          console.error('[出错2]:', err);
           // 对于其他未知异常，使用 500 状态码和默认错误消息
           const message = err instanceof Error ? err.message : '服务器内部错误';
-          return throwError(() => new HttpException(message, 500));
+          return throwError(
+            () => new HttpException({ code: 400, message, data: null }, 500),
+          );
         }
       }),
     );
