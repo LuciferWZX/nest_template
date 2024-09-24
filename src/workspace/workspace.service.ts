@@ -20,7 +20,7 @@ export class WorkspaceService {
       const parentDir = await this.workspaceModel.findOne({
         rejectOnEmpty: undefined,
         where: {
-          parentId: params.parentId,
+          id: params.parentId,
         },
       });
       if (!parentDir) {
@@ -48,10 +48,37 @@ export class WorkspaceService {
       parentId: params.parentId,
     });
   }
-  async batchDelete(uid: string, ids: string[]) {
+  async getAll(uid: string) {
+    return await this.workspaceModel.findAll({
+      where: {
+        creatorId: uid,
+      },
+    });
+  }
+  async getDeletedIds(prevIds: string[], parentIds: string[]) {
+    const deletedIds: string[] = prevIds;
+    const dirIds: string[] = [];
+    const workspaces = await this.workspaceModel.findAll({
+      where: {
+        parentId: parentIds,
+      },
+    });
+    for (let i = 0; i < workspaces.length; i++) {
+      deletedIds.push(workspaces[i].id);
+      if (workspaces[i].type === WorkspaceType.dir) {
+        dirIds.push(workspaces[i].id);
+      }
+    }
+    if (dirIds.length > 0) {
+      return await this.getDeletedIds(deletedIds, dirIds);
+    }
+    return deletedIds;
+  }
+  async batchDelete(uid: string, _ids: string[]) {
     try {
       await this.sequelize.transaction(async (t) => {
         // const transactionHost = { transaction: t };
+        const ids: string[] = await this.getDeletedIds(_ids, _ids);
         await this.workspaceModel.update(
           {
             deleterId: uid,

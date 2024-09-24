@@ -12,4 +12,7 @@ export const Libs = {
     // 使用自定义的 nanoid 生成函数来生成 ID
     return customNanoid();
   },
+  sleep(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  },
 };

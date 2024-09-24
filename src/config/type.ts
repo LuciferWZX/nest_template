@@ -5,6 +5,10 @@ export interface EnvDatabase {
   password: string;
   database: string;
 }
+export interface EnvRedis {
+  host: string;
+  port: number;
+}
 export interface EnvJWT {
   secret: string;
   expiresIn: number;

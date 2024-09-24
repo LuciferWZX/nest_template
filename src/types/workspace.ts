@@ -1,4 +1,4 @@
 export enum WorkspaceType {
-  dir = 'directory',
+  dir = 'dir',
   file = 'file',
 }

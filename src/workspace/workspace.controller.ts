@@ -14,6 +14,11 @@ import { WorkspaceService } from './workspace.service';
 export class WorkspaceController {
   constructor(private workspaceService: WorkspaceService) {}
 
+  @Get('')
+  getAllWorkspace(@Request() req) {
+    const user: User = req.user;
+    return this.workspaceService.getAll(user.id);
+  }
   @Post('create')
   create(@Request() req, @Body() createWorkspaceDto: CreateWorkspaceDto) {
     const user: User = req.user;

@@ -8,6 +8,10 @@ export default () => {
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_BASE,
     },
+    redis: {
+      host: process.env.REDIS_HOST,
+      port: process.env.REDIS_PORT,
+    },
     jwt: {
       secret: process.env.JWT_SECRET,
       expiresIn: process.env.JWT_EXPIRES_IN_SECONDS + 's',

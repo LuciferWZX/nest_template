@@ -4,12 +4,14 @@ import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration from './config/configuration';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { EnvDatabase } from './config/type';
+import { EnvDatabase, EnvRedis } from './config/type';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { ResponseInterceptor } from './interceptor/Response.interceptor';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { WorkspaceModule } from './workspace/workspace.module';
+import { BullModule } from '@nestjs/bullmq';
+import { WorkflowModule } from './workflow/workflow.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -34,9 +36,23 @@ import { WorkspaceModule } from './workspace/workspace.module';
       },
       inject: [ConfigService],
     }),
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => {
+        const config = configService.get<EnvRedis>('redis');
+        return {
+          connection: {
+            host: config.host,
+            port: config.port,
+          },
+        };
+      },
+      inject: [ConfigService],
+    }),
     AuthModule,
     UsersModule,
     WorkspaceModule,
+    WorkflowModule,
   ],
   controllers: [AppController],
   providers: [
