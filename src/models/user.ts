@@ -9,7 +9,7 @@ import {
   DeletedAt,
   BeforeCreate,
 } from 'sequelize-typescript';
-import { UserRole } from '../types';
+import { IUser, UserRole } from '../types';
 import { Libs } from '../lib';
 
 @Table({ tableName: 'tb_user' })

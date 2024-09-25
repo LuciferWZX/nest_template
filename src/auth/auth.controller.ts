@@ -13,6 +13,7 @@ import { SignInDto } from '../dtos/signIn.dto';
 import { AuthGuard } from '../guards/auth.guard';
 import { SignUpDto } from '../dtos/signUp.dto';
 import { Public } from './decorator';
+import { IUser } from '../types';
 
 @Controller('auth')
 export class AuthController {
@@ -33,6 +34,6 @@ export class AuthController {
   }
   @Get('profile')
   getProfile(@Request() req) {
-    return req.user;
+    return req.user as IUser;
   }
 }

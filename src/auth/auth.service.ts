@@ -3,6 +3,7 @@ import { UsersService } from '../users/users.service';
 import { User } from '../models/user';
 import { JwtService } from '@nestjs/jwt';
 import { SignUpDto } from '../dtos/signUp.dto';
+import { IUser } from '../types';
 
 @Injectable()
 export class AuthService {
@@ -13,7 +14,7 @@ export class AuthService {
   async signIn(
     username: string,
     pass: string,
-  ): Promise<(User & { access_token: string }) | null> {
+  ): Promise<(IUser & { access_token: string }) | null> {
     const user = await this.userService.findOne({
       username: username,
     });
@@ -23,10 +24,10 @@ export class AuthService {
     if (user.password !== pass) {
       throw new UnauthorizedException('密码不正确');
     }
-    const { password, ...restUser } = user;
-    const payload = { sub: user.id, ...restUser.dataValues };
+    const { password, ...restUser } = user.dataValues;
+    const payload = { sub: user.id, ...restUser };
     return {
-      ...restUser.dataValues,
+      ...(restUser as IUser),
       access_token: await this.jwtService.signAsync(payload),
     };
   }
