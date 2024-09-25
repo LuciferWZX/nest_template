@@ -8,6 +8,8 @@ export interface EnvDatabase {
 export interface EnvRedis {
   host: string;
   port: number;
+  username: string;
+  password: string;
 }
 export interface EnvJWT {
   secret: string;

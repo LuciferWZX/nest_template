@@ -44,6 +44,8 @@ import { WorkflowModule } from './workflow/workflow.module';
           connection: {
             host: config.host,
             port: config.port,
+            user: config.username,
+            password: config.password,
           },
         };
       },
